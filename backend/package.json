@@ -1,0 +1,19 @@
+{
+  "name": "agriflow-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/app/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "morgan": "^1.10.0",
+    "msnodesqlv8": "^3.1.0",
+    "mssql": "^12.0.0",
+    "nanoid": "^5.0.7",
+    "node-fetch": "^3.3.2"
+  }
+}
