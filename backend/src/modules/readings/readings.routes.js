@@ -1,10 +1,21 @@
 import { Router } from "express";
-import { insertReading } from "./readings.service.js";
+import {
+  buildSnapshots,
+  fetchLatestReadings,
+  insertReading,
+} from "./readings.service.js";
 import { callMl } from "../ml/ml.service.js";
 import { nowISO } from "../../utils/time.js";
 
 export function createReadingsRouter({ pool, sensorIds, sse, mlUrl }) {
   const router = Router();
+
+  router.get("/readings", async (req, res) => {
+    const limit = req.query.limit;
+    const rows = await fetchLatestReadings(pool, limit);
+    const items = buildSnapshots(rows);
+    res.json({ items });
+  });
 
   router.post("/simulate/reading", async (req, res) => {
     const o = req.body || {};

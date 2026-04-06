@@ -2,6 +2,9 @@ import env from "./env.js";
 
 const trustedConnection =
   String(env.DB_TRUSTED_CONNECTION).toLowerCase() !== "false";
+const trustServerCertificate =
+  String(env.DB_TRUST_SERVER_CERT).toLowerCase() !== "false";
+const encrypt = String(env.DB_ENCRYPT).toLowerCase() === "true";
 
 export const dbConfig = {
   server: env.DB_SERVER,
@@ -10,5 +13,7 @@ export const dbConfig = {
   options: {
     trustedConnection,
     instanceName: env.DB_INSTANCE,
+    trustServerCertificate,
+    encrypt,
   },
 };

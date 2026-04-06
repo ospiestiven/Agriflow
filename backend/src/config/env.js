@@ -11,6 +11,8 @@ const env = {
   DB_DRIVER: process.env.DB_DRIVER || "msnodesqlv8",
   DB_INSTANCE: process.env.DB_INSTANCE || "SQLEXPRESS",
   DB_TRUSTED_CONNECTION: process.env.DB_TRUSTED_CONNECTION ?? "true",
+  DB_TRUST_SERVER_CERT: process.env.DB_TRUST_SERVER_CERT ?? "true",
+  DB_ENCRYPT: process.env.DB_ENCRYPT ?? "false",
 };
 
 export default env;

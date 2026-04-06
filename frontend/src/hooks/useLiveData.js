@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createEventSource } from "../services/api.js";
+import { createEventSource, fetchReadings } from "../services/api.js";
 
 export function useLiveData() {
   const [reading, setReading] = useState(null);
@@ -21,6 +21,23 @@ export function useLiveData() {
     });
     ev.addEventListener("ml", (e) => setMl(JSON.parse(e.data)));
     return () => ev.close();
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    fetchReadings(200)
+      .then((data) => {
+        if (!active) return;
+        const items = Array.isArray(data?.items) ? data.items : [];
+        if (!items.length) return;
+        setHistory((prev) => (prev.length ? prev : items));
+        setReading((prev) => prev ?? items[items.length - 1]);
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const alerts = useMemo(() => {

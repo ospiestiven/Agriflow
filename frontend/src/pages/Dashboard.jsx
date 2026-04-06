@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLiveData } from "../hooks/useLiveData.js";
+import { useScrollSpy } from "../hooks/useScrollSpy.js";
 import ActionCard from "../components/ActionCard.jsx";
 import MetricCard from "../components/MetricCard.jsx";
 import MlCard from "../components/MlCard.jsx";
@@ -9,16 +10,20 @@ import SystemStatusCard from "../components/SystemStatusCard.jsx";
 import AlertsCard from "../components/AlertsCard.jsx";
 import TrendCard from "../components/TrendCard.jsx";
 
-export default function Dashboard() {
+const sectionIds = ["overview", "metrics", "system", "actions"];
+
+export default function Dashboard({ onSectionChange }) {
   const { reading, ml, status, history, alerts } = useLiveData();
   const [mode, setMode] = useState("auto");
+  const activeSection = useScrollSpy(sectionIds);
+
+  useEffect(() => {
+    if (onSectionChange) onSectionChange(activeSection);
+  }, [activeSection, onSectionChange]);
 
   return (
-    <div className="min-h-screen bg-app text-slate-900">
-      <div className="bg-orb orb-1" />
-      <div className="bg-orb orb-2" />
-
-      <div className="page">
+    <div className="space-y-6">
+      <section id="overview" className="space-y-6">
         <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
             <p className="eyebrow">AgriFlow · Control Center</p>
@@ -41,7 +46,7 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <section className="hero card">
+        <div className="hero card">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">
               Resumen operativo
@@ -72,9 +77,10 @@ export default function Dashboard() {
               </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <section id="metrics" className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <MetricCard
             title="Humedad del suelo"
             subtitle="Sensor A0"
@@ -93,20 +99,19 @@ export default function Dashboard() {
             value={reading?.light}
             unit="raw"
           />
-        </section>
+      </section>
 
-        <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <SystemStatusCard status={status} ml={ml} />
-          <AlertsCard alerts={alerts} />
-          <TrendCard history={history} />
-        </section>
+      <section id="system" className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <SystemStatusCard status={status} ml={ml} />
+        <AlertsCard alerts={alerts} />
+        <TrendCard history={history} />
+      </section>
 
-        <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <ActionCard />
-          <MlCard ml={ml} />
-          <MetaCard reading={reading} />
-        </section>
-      </div>
+      <section id="actions" className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <ActionCard />
+        <MlCard ml={ml} />
+        <MetaCard reading={reading} />
+      </section>
     </div>
   );
 }
