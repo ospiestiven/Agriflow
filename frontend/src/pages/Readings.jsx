@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -48,7 +48,7 @@ export default function Readings() {
     <div className="space-y-6">
       <header>
         <p className="eyebrow">AgriFlow · Lecturas</p>
-        <h1 className="title">Historial y analisis</h1>
+        <h1 className="title">Historial y análisis</h1>
         <p className="subtitle">
           Visualiza lecturas recientes, tendencias y exportaciones.
         </p>
@@ -56,7 +56,7 @@ export default function Readings() {
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="card">
-          <h2 className="text-base font-semibold text-slate-800">Humedad suelo</h2>
+          <h2 className="text-base font-semibold text-slate-800">Humedad del suelo</h2>
           <Sparkline data={soil} stroke="#1b7f5c" />
           <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-slate-500">
             <div>
@@ -114,9 +114,9 @@ export default function Readings() {
       <section className="card">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-800">
-            Grafico combinado
+            Gráfico combinado
           </h2>
-          <span className="chip">Ultimos 40</span>
+          <span className="chip">Últimos 40</span>
         </div>
         <div className="chart-shell mt-4">
           {chartData.length ? (
@@ -157,7 +157,7 @@ export default function Readings() {
       <section className="card">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold text-slate-800">
-            Ultimas lecturas
+            Últimas lecturas
           </h2>
           <span className="chip chip-accent">Simulado</span>
         </div>

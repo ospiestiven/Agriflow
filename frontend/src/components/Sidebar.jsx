@@ -1,17 +1,11 @@
-import { NavLink, Link, useLocation } from "react-router-dom";
-import {
-  Activity,
-  Brain,
-  Droplet,
-  LayoutDashboard,
-  Settings,
-} from "lucide-react";
+﻿import { NavLink, Link, useLocation } from "react-router-dom";
+import { Activity, Brain, LayoutDashboard } from "lucide-react";
 import logo from "../assets/agriflow-logo.svg";
 
 const dashboardSections = [
   { id: "overview", label: "Resumen" },
-  { id: "metrics", label: "Metricas" },
-  { id: "system", label: "Sistema" },
+  { id: "metrics", label: "Sensores" },
+  { id: "system", label: "Estado" },
   { id: "actions", label: "Acciones" },
 ];
 
@@ -43,7 +37,7 @@ export default function Sidebar({ activeSection }) {
         </div>
         <div>
           <p className="brand-name">AgriFlow</p>
-          <p className="brand-sub">Control Center</p>
+          <p className="brand-sub">Centro de Control</p>
         </div>
       </div>
 
@@ -54,6 +48,7 @@ export default function Sidebar({ activeSection }) {
           </NavItem>
           {onDashboard ? (
             <div className="nav-sub">
+              <p className="nav-sub-title">Secciones</p>
               {dashboardSections.map((section) => (
                 <Link
                   key={section.id}
@@ -73,12 +68,6 @@ export default function Sidebar({ activeSection }) {
         </NavItem>
         <NavItem to="/ai" icon={Brain}>
           IA y reglas
-        </NavItem>
-        <NavItem to="/manual" icon={Droplet}>
-          Riego manual
-        </NavItem>
-        <NavItem to="/settings" icon={Settings}>
-          Configuracion
         </NavItem>
       </nav>
 

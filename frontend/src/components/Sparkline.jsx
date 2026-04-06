@@ -1,4 +1,4 @@
-export default function Sparkline({ data = [], stroke = "#1b7f5c" }) {
+﻿export default function Sparkline({ data = [], stroke = "#1b7f5c" }) {
   if (!data.length) {
     return (
       <div className="h-10 w-full rounded-xl bg-slate-100 animate-pulse" />

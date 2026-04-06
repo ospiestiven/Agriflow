@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import { createEventSource, fetchReadings } from "../services/api.js";
 
 export function useLiveData() {
@@ -23,21 +23,13 @@ export function useLiveData() {
     return () => ev.close();
   }, []);
 
-  useEffect(() => {
-    let active = true;
-    fetchReadings(200)
-      .then((data) => {
-        if (!active) return;
-        const items = Array.isArray(data?.items) ? data.items : [];
-        if (!items.length) return;
-        setHistory((prev) => (prev.length ? prev : items));
-        setReading((prev) => prev ?? items[items.length - 1]);
-      })
-      .catch(() => {});
-
-    return () => {
-      active = false;
-    };
+  const loadFromDb = useCallback(async (limit = 200) => {
+    const data = await fetchReadings(limit);
+    const items = Array.isArray(data?.items) ? data.items : [];
+    if (!items.length) return false;
+    setHistory(items);
+    setReading(items[items.length - 1]);
+    return true;
   }, []);
 
   const alerts = useMemo(() => {
@@ -72,5 +64,5 @@ export function useLiveData() {
     return items;
   }, [reading]);
 
-  return { reading, ml, status, history, alerts };
+  return { reading, ml, status, history, alerts, loadFromDb };
 }

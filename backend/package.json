@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node src/app/server.js"
+    "dev": "node src/app/server.js",
+    "test": "node --check src/app/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -1,4 +1,4 @@
-function StatusRow({ label, value, tone }) {
+﻿function StatusRow({ label, value, tone }) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-slate-500">{label}</span>

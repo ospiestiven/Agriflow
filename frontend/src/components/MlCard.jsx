@@ -1,4 +1,4 @@
-function ConfidenceBar({ value }) {
+﻿function ConfidenceBar({ value }) {
   const pct = Math.round((value ?? 0) * 100);
   return (
     <div className="mt-3">
@@ -26,7 +26,7 @@ export default function MlCard({ ml }) {
     <div className="card card-hover">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold text-slate-800">IA de riego</h3>
-        <span className="chip chip-ml">Prediccion</span>
+        <span className="chip chip-ml">Prediccin</span>
       </div>
       {ml ? (
         <>
@@ -63,7 +63,7 @@ export default function MlCard({ ml }) {
         </>
       ) : (
         <div className="mt-6 text-sm text-slate-400">
-          Esperando prediccion de la IA...
+          Esperando predicción de la IA...
         </div>
       )}
     </div>

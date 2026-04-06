@@ -1,4 +1,4 @@
-import { useLiveData } from "../hooks/useLiveData.js";
+﻿import { useLiveData } from "../hooks/useLiveData.js";
 import MlCard from "../components/MlCard.jsx";
 
 const rules = [
@@ -14,12 +14,12 @@ const rules = [
   },
   {
     title: "Temperatura alta",
-    detail: "Si temperatura > 30C, aumentar minutos.",
+    detail: "Si temperatura > 30 °C, aumentar minutos.",
     level: "warn",
   },
   {
     title: "Temperatura baja",
-    detail: "Si temperatura < 15C, reducir minutos.",
+    detail: "Si temperatura < 15 °C, reducir minutos.",
     level: "warn",
   },
 ];
@@ -33,7 +33,7 @@ export default function AiRules() {
         <p className="eyebrow">AgriFlow · IA</p>
         <h1 className="title">IA y reglas</h1>
         <p className="subtitle">
-          Reglas activas, modelos y explicaciones de prediccion.
+          Reglas activas, modelos y explicaciones de predicción.
         </p>
       </header>
 
@@ -55,26 +55,7 @@ export default function AiRules() {
         <MlCard ml={ml} />
       </section>
 
-      <section className="card">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-slate-800">Modelo actual</h2>
-          <span className="chip chip-ml">Fallback</span>
-        </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-3 text-sm text-slate-600">
-          <div>
-            <p className="text-xs text-slate-400">Version</p>
-            <p className="font-semibold text-slate-900">0.1.0</p>
-          </div>
-          <div>
-            <p className="text-xs text-slate-400">Servicio</p>
-            <p className="font-semibold text-slate-900">FastAPI local</p>
-          </div>
-          <div>
-            <p className="text-xs text-slate-400">Modo</p>
-            <p className="font-semibold text-slate-900">Reglas basicas</p>
-          </div>
-        </div>
-      </section>
+      
     </div>
   );
 }

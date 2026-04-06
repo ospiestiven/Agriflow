@@ -1,4 +1,4 @@
-import Sparkline from "./Sparkline.jsx";
+﻿import Sparkline from "./Sparkline.jsx";
 
 export default function TrendCard({ history }) {
   const soil = history.map((h) => h.soilMoisture);
@@ -9,12 +9,12 @@ export default function TrendCard({ history }) {
     <div className="card card-hover">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold text-slate-800">Tendencias</h3>
-        <span className="chip">Ultimos datos</span>
+        <span className="chip">Últimos datos</span>
       </div>
       <div className="mt-4 space-y-4">
         <div>
           <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Humedad suelo</span>
+            <span>Humedad del suelo</span>
             <span>%</span>
           </div>
           <Sparkline data={soil} stroke="#1b7f5c" />
