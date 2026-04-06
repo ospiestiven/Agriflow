@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from "react";
+﻿// Hook para detectar sección activa por scroll.
+import { useEffect, useState } from "react";
 
 export function useScrollSpy(sectionIds, offset = 120) {
   const [activeId, setActiveId] = useState(sectionIds?.[0] ?? null);

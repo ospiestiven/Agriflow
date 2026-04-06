@@ -1,4 +1,6 @@
-﻿export default function MetaCard({ reading }) {
+﻿// Tarjeta con el JSON de la última lectura.
+// Presenta la lectura cruda en formato JSON.
+export default function MetaCard({ reading }) {
   return (
     <div className="card card-hover">
       <div className="flex items-center justify-between">

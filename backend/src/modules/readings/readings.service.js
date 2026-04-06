@@ -1,3 +1,4 @@
+﻿// Servicios de lecturas y mapeo desde la BD.
 import sql from "mssql/msnodesqlv8.js";
 
 export async function insertReading(pool, { id, valor, ts }) {
@@ -10,9 +11,9 @@ export async function insertReading(pool, { id, valor, ts }) {
       `INSERT INTO Lecturas (id_sensor, valor, fecha_lectura) VALUES (@id, @valor, @ts)`
     );
 }
-
+// Función para obtener las lecturas más recientes, con un límite opcional.
 export async function fetchLatestReadings(pool, limit = 200) {
-  const safeLimit = Math.min(Math.max(Number(limit) || 200, 1), 1000);
+  const safeLimit = Math.min(Math.max(Number(limit) || 200, 1), 1000); // Limitar entre 1 y 1000 para evitar consultas excesivas.
   const result = await pool
     .request()
     .input("limit", sql.Int, safeLimit)
@@ -29,12 +30,13 @@ export async function fetchLatestReadings(pool, limit = 200) {
   return result.recordset || [];
 }
 
+// Función para construir snapshots a partir de las filas obtenidas de la BD, normalizando timestamps y mapeando nombres de sensores a claves legibles.
 function normalizeTs(value) {
   if (!value) return "";
   const d = value instanceof Date ? value : new Date(value);
   return d.toISOString().replace("Z", "");
 }
-
+// mapea nombres de sensores a claves legibles, basada en palabras clave en el nombre y tipo del sensor.
 function mapSensorNameToKey(name, tipo) {
   const n = (name || "").trim().toLowerCase();
   const t = (tipo || "").trim().toLowerCase();
@@ -53,6 +55,7 @@ function mapSensorNameToKey(name, tipo) {
   return null;
 }
 
+//construye snapshots a partir de las filas obtenidas de la BD, normalizando timestamps y mapeando nombres de sensores a claves legibles.
 export function buildSnapshots(rows) {
   const map = new Map();
   for (const row of rows) {

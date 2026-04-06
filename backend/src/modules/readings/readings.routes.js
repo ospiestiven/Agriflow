@@ -1,3 +1,4 @@
+﻿// Rutas para lecturas y simulación.
 import { Router } from "express";
 import {
   buildSnapshots,
@@ -7,6 +8,7 @@ import {
 import { callMl } from "../ml/ml.service.js";
 import { nowISO } from "../../utils/time.js";
 
+// funcion para crear el router de lecturas, inyectando dependencias como pool de DB, IDs de sensores, función SSE y URL de ML.
 export function createReadingsRouter({ pool, sensorIds, sse, mlUrl }) {
   const router = Router();
 
@@ -69,7 +71,7 @@ export function createReadingsRouter({ pool, sensorIds, sse, mlUrl }) {
       });
       sse("ml", ml);
     } catch (e) {
-      // si ML no está, seguimos
+      // si ML no estÃ¡, seguimos
     }
 
     res.json({ ok: true, stored: true, ts, ml });

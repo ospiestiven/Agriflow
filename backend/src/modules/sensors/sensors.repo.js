@@ -1,3 +1,6 @@
+﻿// Repositorio de sensores y creación de registros base.
+
+//
 async function ensureSensor(pool, nombre, tipo, pin, unidad) {
   const r = await pool
     .request()
@@ -17,6 +20,7 @@ async function ensureSensor(pool, nombre, tipo, pin, unidad) {
   return ins.recordset[0].id_sensor;
 }
 
+//  para asegurar que los sensores base existen en la BD, creando registros si es necesario, y retornando sus IDs.
 export async function ensureDefaultSensors(pool) {
   const idHumSuelo = await ensureSensor(
     pool,
@@ -30,7 +34,7 @@ export async function ensureDefaultSensors(pool) {
     "Temp Aire DHT11",
     "Temperatura",
     "D4",
-    "Â°C"
+    "°C"
   );
   const idLuz = await ensureSensor(pool, "Luz", "Luminosidad", "A1", "raw");
   const idLluvia = await ensureSensor(

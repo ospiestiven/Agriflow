@@ -1,15 +1,19 @@
-﻿import { useState } from "react";
+﻿// Tarjeta de acciones para simulación y recarga.
+import { useState } from "react";
 import { simulateReading } from "../services/api.js";
 
+// Renderiza la tarjeta principal de acciones del dashboard.
 export default function ActionCard({ onLoadDb }) {
   const [loading, setLoading] = useState(false);
   const [canLoadDb, setCanLoadDb] = useState(false);
 
+  // Genera un número aleatorio dentro de un rango.
   function rand(min, max, decimals = 0) {
     const value = Math.random() * (max - min) + min;
     return decimals > 0 ? Number(value.toFixed(decimals)) : Math.round(value);
   }
 
+  // Envía una lectura simulada y refresca desde la BD.
   async function simulateOne() {
     setLoading(true);
     const soilMoisture = rand(30, 70, 1);
@@ -25,6 +29,7 @@ export default function ActionCard({ onLoadDb }) {
     setLoading(false);
   }
 
+  // Recarga manualmente las lecturas desde la BD.
   async function loadFromDb() {
     if (!onLoadDb) return;
     setLoading(true);
@@ -54,7 +59,7 @@ export default function ActionCard({ onLoadDb }) {
         </button>
       ) : null}
       <p className="mt-3 text-xs text-slate-400">
-        Requiere backend activo en `http://localhost:3000`.
+        Requiere backend activo.
       </p>
     </div>
   );

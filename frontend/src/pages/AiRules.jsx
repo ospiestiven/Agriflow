@@ -1,4 +1,5 @@
-﻿import { useLiveData } from "../hooks/useLiveData.js";
+﻿// Página de reglas activas y estado de IA.
+import { useLiveData } from "../hooks/useLiveData.js";
 import MlCard from "../components/MlCard.jsx";
 
 const rules = [

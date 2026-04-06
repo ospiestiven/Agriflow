@@ -1,4 +1,6 @@
-﻿function StatusRow({ label, value, tone }) {
+﻿// Tarjeta de estado general del sistema.
+// Renderiza una fila de estado con etiqueta y valor.
+function StatusRow({ label, value, tone }) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-slate-500">{label}</span>
@@ -7,6 +9,7 @@
   );
 }
 
+// Presenta el estado global del backend, IA y sensores.
 export default function SystemStatusCard({ status, ml }) {
   const backendTone = status === "connected" ? "ok" : status === "error" ? "bad" : "warn";
   const backendLabel =

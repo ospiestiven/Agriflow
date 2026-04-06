@@ -1,3 +1,4 @@
+﻿// Bootstrap del servidor Express y registro de rutas principales.
 import express from "express";
 import cors from "cors";
 

@@ -1,3 +1,4 @@
+﻿// Configuración de conexión a SQL Server.
 import env from "./env.js";
 
 const trustedConnection =

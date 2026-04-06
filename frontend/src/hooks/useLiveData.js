@@ -1,4 +1,5 @@
-﻿import { useCallback, useEffect, useMemo, useState } from "react";
+﻿// Hook para lecturas en vivo y alertas.
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createEventSource, fetchReadings } from "../services/api.js";
 
 export function useLiveData() {

@@ -1,5 +1,7 @@
-﻿import Sparkline from "./Sparkline.jsx";
+﻿// Tarjeta de tendencias con mini gráficas.
+import Sparkline from "./Sparkline.jsx";
 
+// Resume la tendencia reciente de sensores con sparklines.
 export default function TrendCard({ history }) {
   const soil = history.map((h) => h.soilMoisture);
   const temp = history.map((h) => h.airTemp);

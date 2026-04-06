@@ -1,3 +1,4 @@
+﻿// Registro SSE y emisión de eventos en tiempo real .
 const clients = new Set();
 
 export function registerSse(app) {

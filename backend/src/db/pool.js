@@ -1,3 +1,4 @@
+﻿// Inicializa el pool de conexión a SQL Server.
 import sql from "mssql/msnodesqlv8.js";
 import { dbConfig } from "../config/db.js";
 

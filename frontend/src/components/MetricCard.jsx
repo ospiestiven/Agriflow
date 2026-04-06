@@ -1,4 +1,6 @@
-﻿export default function MetricCard({ title, value, unit, subtitle }) {
+﻿// Tarjeta métrica para valores de sensores.
+// Muestra un KPI con título, valor y unidad.
+export default function MetricCard({ title, value, unit, subtitle }) {
   return (
     <div className="card card-hover">
       <div className="flex items-start justify-between">

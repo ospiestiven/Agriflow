@@ -1,4 +1,5 @@
-﻿import { useEffect } from "react";
+﻿// Página principal del dashboard.
+import { useEffect } from "react";
 import { useLiveData } from "../hooks/useLiveData.js";
 import { useScrollSpy } from "../hooks/useScrollSpy.js";
 import ActionCard from "../components/ActionCard.jsx";

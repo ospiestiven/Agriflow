@@ -1,3 +1,4 @@
+﻿// Rutas de estado y salud del backend.
 import { Router } from "express";
 
 export function createHealthRouter({ pool }) {

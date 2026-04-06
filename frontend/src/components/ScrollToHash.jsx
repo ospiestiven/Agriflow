@@ -1,6 +1,8 @@
-﻿import { useEffect } from "react";
+﻿// Componente para hacer scroll al hash de la URL.
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
+// Sincroniza el scroll con el hash activo en la URL.
 export default function ScrollToHash({ offset = 0 }) {
   const location = useLocation();
 

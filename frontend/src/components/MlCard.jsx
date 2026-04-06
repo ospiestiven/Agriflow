@@ -1,4 +1,6 @@
-﻿function ConfidenceBar({ value }) {
+﻿// Tarjeta con salida de la IA de riego.
+// Renderiza la barra de confianza de la predicción.
+function ConfidenceBar({ value }) {
   const pct = Math.round((value ?? 0) * 100);
   return (
     <div className="mt-3">
@@ -16,6 +18,7 @@
   );
 }
 
+// Muestra el resultado de la IA y su explicación.
 export default function MlCard({ ml }) {
   const should = ml?.should_irrigate;
   const minutes = ml?.minutes_to_irrigate ?? "—";
@@ -26,7 +29,7 @@ export default function MlCard({ ml }) {
     <div className="card card-hover">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold text-slate-800">IA de riego</h3>
-        <span className="chip chip-ml">Prediccin</span>
+        <span className="chip chip-ml">Predicción</span>
       </div>
       {ml ? (
         <>
@@ -37,7 +40,7 @@ export default function MlCard({ ml }) {
               }`}
             />
             <div>
-              <p className="text-sm text-slate-500">Decision</p>
+              <p className="text-sm text-slate-500">Decisión</p>
               <p className="text-lg font-semibold text-slate-900">
                 {should ? "Regar" : "No regar"}
               </p>

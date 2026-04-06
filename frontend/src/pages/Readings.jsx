@@ -1,4 +1,5 @@
-﻿import { useMemo } from "react";
+﻿// Página de lecturas e históricos.
+import { useMemo } from "react";
 import {
   LineChart,
   Line,

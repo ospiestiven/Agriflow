@@ -1,4 +1,5 @@
-﻿import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+﻿// Rutas y layout principal de la aplicación.
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useState } from "react";
 import Dashboard from "../pages/Dashboard.jsx";
 import Readings from "../pages/Readings.jsx";

@@ -1,4 +1,5 @@
-﻿import { NavLink, Link, useLocation } from "react-router-dom";
+﻿// Barra lateral de navegación del dashboard.
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { Activity, Brain, LayoutDashboard } from "lucide-react";
 import logo from "../assets/agriflow-logo.svg";
 
@@ -9,6 +10,7 @@ const dashboardSections = [
   { id: "actions", label: "Acciones" },
 ];
 
+// Renderiza un ítem de navegación lateral.
 function NavItem({ to, icon: Icon, children }) {
   return (
     <NavLink
@@ -25,6 +27,7 @@ function NavItem({ to, icon: Icon, children }) {
   );
 }
 
+// Renderiza la barra lateral con navegación y secciones.
 export default function Sidebar({ activeSection }) {
   const location = useLocation();
   const onDashboard = location.pathname === "/dashboard";

@@ -1,3 +1,4 @@
+﻿// Cliente para llamar al servicio de IA.
 import fetch from "node-fetch";
 
 export async function callMl({ mlUrl, payload }) {

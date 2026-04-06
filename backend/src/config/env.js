@@ -1,3 +1,4 @@
+﻿// Carga y valores por defecto de variables de entorno.
 import dotenv from "dotenv";
 
 dotenv.config();
