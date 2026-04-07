@@ -1,5 +1,5 @@
 ﻿// Página de lecturas e históricos.
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LineChart,
   Line,
@@ -8,9 +8,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useLiveData } from "../hooks/useLiveData.js";
+import { fetchReadings } from "../services/api.js";
 import Sparkline from "../components/Sparkline.jsx";
 
+// Calcula métricas básicas de una serie numérica.
 function summarize(values) {
   if (!values.length) return { min: "—", max: "—", avg: "—" };
   const min = Math.min(...values);
@@ -23,27 +24,110 @@ function summarize(values) {
   };
 }
 
-export default function Readings() {
-  const { history } = useLiveData();
-  const rows = useMemo(() => history.slice(-12).reverse(), [history]);
+// Formatea el timestamp para mostrar fecha y hora legibles.
+function formatTimestamp(value) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString("es-CO", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
-  const soil = history.map((h) => h.soilMoisture).filter((v) => typeof v === "number");
-  const temp = history.map((h) => h.airTemp).filter((v) => typeof v === "number");
-  const light = history.map((h) => h.light).filter((v) => typeof v === "number");
+// Renderiza el historial de lecturas con filtros y paginación.
+export default function Readings() {
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [sensor, setSensor] = useState("all");
+  const [page, setPage] = useState(1);
+  const defaultPageSize = 20;
+  const [pageSize, setPageSize] = useState(defaultPageSize);
+
+  useEffect(() => {
+    setPage(1);
+  }, [startDate, endDate, sensor, pageSize]);
+
+  useEffect(() => {
+    const params = { limit: 5000 };
+    if (startDate) params.start = `${startDate}T00:00:00`;
+    if (endDate) params.end = `${endDate}T23:59:59`;
+    if (sensor !== "all") params.sensor = sensor;
+
+    setLoading(true);
+    fetchReadings(params)
+      .then((data) => {
+        const list = Array.isArray(data?.items) ? data.items : [];
+
+        const startTs = startDate ? new Date(`${startDate}T00:00:00`) : null;
+        const endTs = endDate ? new Date(`${endDate}T23:59:59`) : null;
+        const sensorKeyMap = {
+          Humedad: "soilMoisture",
+          Temperatura: "airTemp",
+          Luz: "light",
+          Lluvia: "rainRaw",
+          Nivel: "waterLevel",
+        };
+        const key = sensor !== "all" ? sensorKeyMap[sensor] : null;
+
+        const next = list.filter((item) => {
+          if (key && typeof item[key] !== "number") return false;
+          if (startTs && new Date(item.ts) < startTs) return false;
+          if (endTs && new Date(item.ts) > endTs) return false;
+          return true;
+        });
+
+        setFilteredItems(next);
+      })
+      .catch(() => setFilteredItems([]))
+      .finally(() => setLoading(false));
+  }, [startDate, endDate, sensor]);
+
+  const rows = useMemo(() => {
+    const startIndex = (page - 1) * pageSize;
+    return filteredItems.slice(startIndex, startIndex + pageSize);
+  }, [filteredItems, page, pageSize]);
+
+  const soil = filteredItems
+    .map((h) => h.soilMoisture)
+    .filter((v) => typeof v === "number");
+  const temp = filteredItems
+    .map((h) => h.airTemp)
+    .filter((v) => typeof v === "number");
+  const light = filteredItems
+    .map((h) => h.light)
+    .filter((v) => typeof v === "number");
 
   const chartData = useMemo(() => {
-    return history.slice(-40).map((h, idx) => ({
+    return filteredItems.slice(-40).map((h, idx) => ({
       idx,
       ts: h.ts ? h.ts.slice(11, 19) : `#${idx + 1}`,
       soilMoisture: typeof h.soilMoisture === "number" ? h.soilMoisture : null,
       airTemp: typeof h.airTemp === "number" ? h.airTemp : null,
       light: typeof h.light === "number" ? h.light : null,
     }));
-  }, [history]);
+  }, [filteredItems]);
 
   const soilStats = summarize(soil);
   const tempStats = summarize(temp);
   const lightStats = summarize(light);
+  const totalPages = Math.max(Math.ceil(filteredItems.length / pageSize), 1);
+  const hasFilters =
+    !!startDate || !!endDate || sensor !== "all" || pageSize !== defaultPageSize;
+
+  // Limpia los filtros activos y vuelve a valores por defecto.
+  function clearFilters() {
+    setStartDate("");
+    setEndDate("");
+    setSensor("all");
+    setPageSize(defaultPageSize);
+    setPage(1);
+  }
 
   return (
     <div className="space-y-6">
@@ -54,6 +138,72 @@ export default function Readings() {
           Visualiza lecturas recientes, tendencias y exportaciones.
         </p>
       </header>
+
+      <section className="card filters">
+        <div className="filter-group">
+          <label>
+            <span>Desde</span>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Hasta</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </label>
+        </div>
+        <div className="filter-group">
+          <label>
+            <span>Sensor</span>
+            <select value={sensor} onChange={(e) => setSensor(e.target.value)}>
+              <option value="all">Todos</option>
+              <option value="Humedad">Humedad</option>
+              <option value="Temperatura">Temperatura</option>
+              <option value="Luz">Luz</option>
+              <option value="Lluvia">Lluvia</option>
+              <option value="Nivel">Nivel</option>
+            </select>
+          </label>
+          <label>
+            <span>Por página</span>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </label>
+        </div>
+        <div className="filter-actions">
+          <div className="filter-chips">
+            {hasFilters ? (
+              <>
+                {startDate ? <span className="chip chip-inline">Desde {startDate}</span> : null}
+                {endDate ? <span className="chip chip-inline">Hasta {endDate}</span> : null}
+                {sensor !== "all" ? (
+                  <span className="chip chip-inline">Sensor: {sensor}</span>
+                ) : null}
+                {pageSize !== defaultPageSize ? (
+                  <span className="chip chip-inline">Por página: {pageSize}</span>
+                ) : null}
+              </>
+            ) : (
+              <span className="text-xs text-slate-400">Sin filtros activos</span>
+            )}
+          </div>
+          <button className="btn-ghost" onClick={clearFilters} disabled={!hasFilters}>
+            Limpiar filtros
+          </button>
+        </div>
+      </section>
 
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="card">
@@ -150,7 +300,9 @@ export default function Readings() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="chart-empty">Esperando lecturas simuladas...</div>
+            <div className="chart-empty">
+              {loading ? "Cargando lecturas..." : "Sin datos para este filtro."}
+            </div>
           )}
         </div>
       </section>
@@ -160,7 +312,7 @@ export default function Readings() {
           <h2 className="text-base font-semibold text-slate-800">
             Últimas lecturas
           </h2>
-          <span className="chip chip-accent">Simulado</span>
+          
         </div>
         <div className="table-wrap mt-4">
           <table className="table">
@@ -177,7 +329,7 @@ export default function Readings() {
               {rows.length ? (
                 rows.map((row, idx) => (
                   <tr key={`${row.ts}-${idx}`}>
-                    <td>{row.ts || "—"}</td>
+                    <td>{formatTimestamp(row.ts)}</td>
                     <td>{row.soilMoisture ?? "—"}</td>
                     <td>{row.airTemp ?? "—"}</td>
                     <td>{row.light ?? "—"}</td>
@@ -187,12 +339,31 @@ export default function Readings() {
               ) : (
                 <tr>
                   <td colSpan={5} className="text-center text-slate-400">
-                    Esperando lecturas simuladas...
+                    {loading ? "Cargando lecturas..." : "Sin datos para este filtro."}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+        <div className="pagination">
+          <button
+            className="btn-ghost"
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            disabled={page <= 1}
+          >
+            Anterior
+          </button>
+          <span>
+            Página {page} de {totalPages}
+          </span>
+          <button
+            className="btn-ghost"
+            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+            disabled={page >= totalPages}
+          >
+            Siguiente
+          </button>
         </div>
       </section>
     </div>

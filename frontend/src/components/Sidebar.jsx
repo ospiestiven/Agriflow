@@ -11,7 +11,8 @@ const dashboardSections = [
 ];
 
 // Renderiza un ítem de navegación lateral.
-function NavItem({ to, icon: Icon, children }) {
+function NavItem(props) {
+  const { to, children } = props;
   return (
     <NavLink
       to={to}
@@ -20,7 +21,7 @@ function NavItem({ to, icon: Icon, children }) {
       }
     >
       <span className="nav-icon">
-        <Icon size={16} />
+        <props.icon size={16} />
       </span>
       <span>{children}</span>
     </NavLink>

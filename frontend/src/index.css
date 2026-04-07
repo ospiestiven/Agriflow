@@ -325,6 +325,57 @@ h4 {
   cursor: not-allowed;
 }
 
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+  align-items: end;
+}
+
+.filter-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.filter-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.filter-group input,
+.filter-group select {
+  border-radius: 12px;
+  border: 1px solid rgba(31, 45, 31, 0.12);
+  padding: 0.5rem 0.7rem;
+  font-size: 0.9rem;
+  background: #fff;
+  min-width: 0;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip-inline {
+  font-size: 0.65rem;
+  padding: 0.25rem 0.45rem;
+}
+
+.filter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
 
 .hero {
   display: flex;
@@ -465,6 +516,16 @@ h4 {
   place-items: center;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 @media (max-width: 1024px) {

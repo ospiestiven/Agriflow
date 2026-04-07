@@ -24,13 +24,17 @@ export function useLiveData() {
     return () => ev.close();
   }, []);
 
-  const loadFromDb = useCallback(async (limit = 200) => {
-    const data = await fetchReadings(limit);
+  const loadFromDb = useCallback(async (params = 200) => {
+    const data = await fetchReadings(params);
     const items = Array.isArray(data?.items) ? data.items : [];
-    if (!items.length) return false;
+    if (!items.length) {
+      setHistory([]);
+      setReading(null);
+      return data ?? null;
+    }
     setHistory(items);
     setReading(items[items.length - 1]);
-    return true;
+    return data;
   }, []);
 
   const alerts = useMemo(() => {

@@ -2,7 +2,7 @@
 import { Router } from "express";
 import {
   buildSnapshots,
-  fetchLatestReadings,
+  fetchReadings,
   insertReading,
 } from "./readings.service.js";
 import { callMl } from "../ml/ml.service.js";
@@ -13,10 +13,42 @@ export function createReadingsRouter({ pool, sensorIds, sse, mlUrl }) {
   const router = Router();
 
   router.get("/readings", async (req, res) => {
-    const limit = req.query.limit;
-    const rows = await fetchLatestReadings(pool, limit);
-    const items = buildSnapshots(rows);
-    res.json({ items });
+    const { limit, start, end, sensor, page, pageSize } = req.query;
+    const usePaging = page || pageSize;
+    const pageNumber = Math.max(parseInt(page, 10) || 1, 1);
+    const pageSizeNumber = Math.min(
+      Math.max(parseInt(pageSize, 10) || 20, 1),
+      200
+    );
+    const fetchLimit = usePaging ? 5000 : limit;
+
+    const rows = await fetchReadings(pool, {
+      limit: fetchLimit,
+      start,
+      end,
+      sensor,
+    });
+    const snapshots = buildSnapshots(rows);
+    const total = snapshots.length;
+
+    let items = snapshots;
+    let totalPages = 1;
+    if (usePaging) {
+      totalPages = Math.max(Math.ceil(total / pageSizeNumber), 1);
+      const safePage = Math.min(pageNumber, totalPages);
+      const startIndex = (safePage - 1) * pageSizeNumber;
+      items = snapshots.slice(startIndex, startIndex + pageSizeNumber);
+      res.json({
+        items,
+        total,
+        page: safePage,
+        pageSize: pageSizeNumber,
+        totalPages,
+      });
+      return;
+    }
+
+    res.json({ items, total, page: 1, pageSize: items.length, totalPages });
   });
 
   router.post("/simulate/reading", async (req, res) => {

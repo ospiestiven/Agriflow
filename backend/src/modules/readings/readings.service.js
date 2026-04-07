@@ -11,22 +11,40 @@ export async function insertReading(pool, { id, valor, ts }) {
       `INSERT INTO Lecturas (id_sensor, valor, fecha_lectura) VALUES (@id, @valor, @ts)`
     );
 }
-// Función para obtener las lecturas más recientes, con un límite opcional.
-export async function fetchLatestReadings(pool, limit = 200) {
-  const safeLimit = Math.min(Math.max(Number(limit) || 200, 1), 1000); // Limitar entre 1 y 1000 para evitar consultas excesivas.
-  const result = await pool
+// Función para obtener lecturas filtradas por fecha/sensor y con límite opcional.
+export async function fetchReadings(
+  pool,
+  { limit, start, end, sensor } = {}
+) {
+  const safeLimit = Math.min(Math.max(Number(limit) || 200, 1), 5000);
+  const startDate = start ? new Date(start) : null;
+  const endDate = end ? new Date(end) : null;
+  const safeStart =
+    startDate && !Number.isNaN(startDate.getTime()) ? startDate : null;
+  const safeEnd = endDate && !Number.isNaN(endDate.getTime()) ? endDate : null;
+  const sensorLike = sensor ? `%${sensor}%` : null;
+
+  const request = pool
     .request()
     .input("limit", sql.Int, safeLimit)
-    .query(
-      `SELECT TOP (@limit)
-         l.fecha_lectura,
-         s.nombre,
-         s.tipo,
-         l.valor
-       FROM Lecturas l
-       INNER JOIN Sensores s ON s.id_sensor = l.id_sensor
-       ORDER BY l.fecha_lectura DESC`
-    );
+    .input("start", sql.DateTime2, safeStart)
+    .input("end", sql.DateTime2, safeEnd)
+    .input("sensor", sql.NVarChar, sensorLike);
+
+  const query = `
+    SELECT TOP (@limit)
+      l.fecha_lectura,
+      s.nombre,
+      s.tipo,
+      l.valor
+    FROM Lecturas l
+    INNER JOIN Sensores s ON s.id_sensor = l.id_sensor
+    WHERE (@start IS NULL OR l.fecha_lectura >= @start)
+      AND (@end IS NULL OR l.fecha_lectura <= @end)
+      AND (@sensor IS NULL OR s.nombre LIKE @sensor OR s.tipo LIKE @sensor)
+    ORDER BY l.fecha_lectura DESC`;
+
+  const result = await request.query(query);
   return result.recordset || [];
 }
 
